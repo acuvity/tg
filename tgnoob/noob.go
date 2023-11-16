@@ -12,7 +12,7 @@
 package tgnoob
 
 import (
-	"io/ioutil"
+	"os"
 	"time"
 )
 
@@ -27,7 +27,7 @@ func CreateCA(
 	var err error
 
 	if out == "" {
-		if out, err = ioutil.TempDir("", "certificates"); err != nil {
+		if out, err = os.MkdirTemp("", "certificates"); err != nil {
 			return "", "", err
 		}
 	}
@@ -59,6 +59,7 @@ func CreateCA(
 		[]string{},             // ips
 		14*24*time.Hour,        // duration
 		[]string{},             // policies
+		[]string{},             // emails
 	); err != nil {
 		return "", "", err
 	}
@@ -84,7 +85,7 @@ func CreateSignedCA(
 	var err error
 
 	if out == "" {
-		if out, err = ioutil.TempDir("", "certificates"); err != nil {
+		if out, err = os.MkdirTemp("", "certificates"); err != nil {
 			return "", "", err
 		}
 	}
@@ -116,6 +117,7 @@ func CreateSignedCA(
 		[]string{},             // ips
 		14*24*time.Hour,        // duration
 		[]string{},             // policies
+		[]string{},             // emails
 	); err != nil {
 		return "", "", err
 	}
@@ -137,13 +139,14 @@ func CreateClientCertificate(
 	signingCertKeyPass string,
 	dns []string,
 	ips []string,
+	emails []string,
 	out string,
 ) (string, string, error) {
 
 	var err error
 
 	if out == "" {
-		if out, err = ioutil.TempDir("", "certificates"); err != nil {
+		if out, err = os.MkdirTemp("", "certificates"); err != nil {
 			return "", "", err
 		}
 	}
@@ -175,6 +178,7 @@ func CreateClientCertificate(
 		ips,                    // ips
 		14*24*time.Hour,        // duration
 		[]string{},             // policies
+		emails,
 	); err != nil {
 		return "", "", err
 	}
@@ -201,7 +205,7 @@ func CreateServerCertificate(
 	var err error
 
 	if out == "" {
-		if out, err = ioutil.TempDir("", "certificates"); err != nil {
+		if out, err = os.MkdirTemp("", "certificates"); err != nil {
 			return "", "", err
 		}
 	}
@@ -233,6 +237,7 @@ func CreateServerCertificate(
 		ips,                    // ips
 		14*24*time.Hour,        // duration
 		[]string{},             // policies
+		[]string{},             // emails
 	); err != nil {
 		return "", "", err
 	}

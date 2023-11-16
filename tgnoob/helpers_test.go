@@ -12,7 +12,6 @@
 package tgnoob
 
 import (
-	"io/ioutil"
 	"os"
 	"testing"
 	"time"
@@ -23,7 +22,7 @@ import (
 func Test_GenerateCertificate(t *testing.T) {
 	Convey("Given an outputfolder", t, func() {
 
-		outputFolder, _ := ioutil.TempDir("", "certificates")
+		outputFolder, _ := os.MkdirTemp("", "certificates")
 
 		Convey("If no name is provided, it should fail", func() {
 			err := GenerateCertificate(
@@ -53,6 +52,7 @@ func Test_GenerateCertificate(t *testing.T) {
 				[]string{},   // ips
 				time.Second,  // duration
 				[]string{},   // policies
+				[]string{},   // emails
 			)
 			So(err, ShouldNotBeNil)
 		})
@@ -85,6 +85,7 @@ func Test_GenerateCertificate(t *testing.T) {
 				[]string{},   // ips
 				time.Second,  // duration
 				[]string{},   // policies
+				[]string{},   // emails
 			)
 			So(err, ShouldBeNil)
 		})
@@ -97,7 +98,7 @@ func Test_GenerateCertificate(t *testing.T) {
 func Test_GenerateCSR(t *testing.T) {
 	Convey("Given an outputfolder", t, func() {
 
-		outputFolder, _ := ioutil.TempDir("", "certificates")
+		outputFolder, _ := os.MkdirTemp("", "certificates")
 
 		Convey("I should be able to generate a csr with a certificate", func() {
 
@@ -124,6 +125,7 @@ func Test_GenerateCSR(t *testing.T) {
 				nil,                // dns
 				nil,                // ips
 				[]string{},         // policies
+				nil,                // emails
 			)
 			So(err, ShouldBeNil)
 		})
@@ -148,6 +150,7 @@ func Test_GenerateCSR(t *testing.T) {
 				[]string{"demo.com"},    // dns
 				[]string{"192.169.0.1"}, // ips
 				[]string{},              // policies
+				[]string{},              // emails
 			)
 			So(err, ShouldBeNil)
 		})
