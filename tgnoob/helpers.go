@@ -24,7 +24,7 @@ import (
 	"strings"
 	"time"
 
-	"go.aporeto.io/tg/tglib"
+	"go.acuvity.ai/tg/tglib"
 )
 
 // GenerateCertificate is a wrapper on top of tglib.IssueCertificate.

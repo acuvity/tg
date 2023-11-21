@@ -12,4 +12,4 @@
 // Package tglib contains various helpers to
 // deal with crypto. It entirely rely on standard
 // go crypto libraries.
-package tglib // import "go.aporeto.io/tg/tglib"
+package tglib // import "go.acuvity.ai/tg/tglib"

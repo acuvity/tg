@@ -1,4 +1,4 @@
-module go.aporeto.io/tg
+module go.acuvity.ai/tg
 
 go 1.12
 

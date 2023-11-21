@@ -20,7 +20,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"go.aporeto.io/tg/tgnoob"
+	"go.acuvity.ai/tg/tgnoob"
 	"golang.org/x/term"
 )
 
