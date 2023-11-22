@@ -23,22 +23,22 @@ import (
 )
 
 type issueCfg struct {
-	signingCertificate *x509.Certificate
-	signingPrivateKey  crypto.PrivateKey
-	keyGen             PrivateKeyGenerator
-	signatureAlgorithm x509.SignatureAlgorithm
-	publicKeyAlgorithm x509.PublicKeyAlgorithm
-	policies           []asn1.ObjectIdentifier
-	dnsNames           []string
-	ipAddresses        []net.IP
-	emailAddresses     []string
 	beginning          time.Time
 	expiration         time.Time
-	keyUsage           x509.KeyUsage
-	extKeyUsage        []x509.ExtKeyUsage
-	extraExtensions    []pkix.Extension
-	isCA               bool
+	signingPrivateKey  crypto.PrivateKey
+	keyGen             PrivateKeyGenerator
 	serialNumber       *big.Int
+	signingCertificate *x509.Certificate
+	extKeyUsage        []x509.ExtKeyUsage
+	ipAddresses        []net.IP
+	emailAddresses     []string
+	dnsNames           []string
+	policies           []asn1.ObjectIdentifier
+	extraExtensions    []pkix.Extension
+	keyUsage           x509.KeyUsage
+	publicKeyAlgorithm x509.PublicKeyAlgorithm
+	signatureAlgorithm x509.SignatureAlgorithm
+	isCA               bool
 }
 
 func newIssueCfg() issueCfg {

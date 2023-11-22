@@ -14,7 +14,7 @@ package tglib
 import (
 	"encoding/base64"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 	"os/exec"
 )
@@ -46,7 +46,7 @@ func GeneratePKCS12(cert []byte, key []byte, ca []byte, passphrase string) ([]by
 	}
 
 	// cert
-	tmpcert, err := ioutil.TempFile("", "tmpcert")
+	tmpcert, err := os.CreateTemp("", "tmpcert")
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +61,7 @@ func GeneratePKCS12(cert []byte, key []byte, ca []byte, passphrase string) ([]by
 	}
 
 	// key
-	tmpkey, err := ioutil.TempFile("", "tmpkey")
+	tmpkey, err := os.CreateTemp("", "tmpkey")
 	if err != nil {
 		return nil, err
 	}
@@ -77,7 +77,7 @@ func GeneratePKCS12(cert []byte, key []byte, ca []byte, passphrase string) ([]by
 	}
 
 	// ca
-	tmpca, err := ioutil.TempFile("", "tmpca")
+	tmpca, err := os.CreateTemp("", "tmpca")
 	if err != nil {
 		return nil, err
 	}
@@ -93,7 +93,7 @@ func GeneratePKCS12(cert []byte, key []byte, ca []byte, passphrase string) ([]by
 	}
 
 	// p12
-	tmpp12, err := ioutil.TempFile("", "tmpp12")
+	tmpp12, err := os.CreateTemp("", "tmpp12")
 	if err != nil {
 		return nil, err
 	}
@@ -108,7 +108,7 @@ func GeneratePKCS12(cert []byte, key []byte, ca []byte, passphrase string) ([]by
 		return nil, err
 	}
 
-	p12data, err := ioutil.ReadAll(tmpp12)
+	p12data, err := io.ReadAll(tmpp12)
 	if err != nil {
 		return nil, err
 	}

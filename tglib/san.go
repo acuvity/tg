@@ -68,8 +68,8 @@ var (
 // Identity is an object holding both the encoded identifier bytes as well as
 // the type of the identity.
 type Identity struct {
-	Type  IdentityType
 	Value []byte
+	Type  IdentityType
 }
 
 // BuildSubjectAltNameExtension builds the SAN extension for the certificate.
