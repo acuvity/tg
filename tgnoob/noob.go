@@ -60,6 +60,7 @@ func CreateCA(
 		14*24*time.Hour,        // duration
 		[]string{},             // policies
 		[]string{},             // emails
+		[]string{},             // extensions
 	); err != nil {
 		return "", "", err
 	}
@@ -118,6 +119,7 @@ func CreateSignedCA(
 		14*24*time.Hour,        // duration
 		[]string{},             // policies
 		[]string{},             // emails
+		[]string{},             // extensions
 	); err != nil {
 		return "", "", err
 	}
@@ -140,6 +142,7 @@ func CreateClientCertificate(
 	dns []string,
 	ips []string,
 	emails []string,
+	extensions []string,
 	out string,
 ) (string, string, error) {
 
@@ -178,6 +181,7 @@ func CreateClientCertificate(
 		ips,                    // ips
 		14*24*time.Hour,        // duration
 		[]string{},             // policies
+		extensions,             // extensions
 		emails,
 	); err != nil {
 		return "", "", err
@@ -199,6 +203,7 @@ func CreateServerCertificate(
 	signingCertKeyPass string,
 	dns []string,
 	ips []string,
+	extensions []string,
 	out string,
 ) (string, string, error) {
 
@@ -238,6 +243,7 @@ func CreateServerCertificate(
 		14*24*time.Hour,        // duration
 		[]string{},             // policies
 		[]string{},             // emails
+		extensions,             // extensions
 	); err != nil {
 		return "", "", err
 	}

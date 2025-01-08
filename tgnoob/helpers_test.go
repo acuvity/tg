@@ -12,7 +12,10 @@
 package tgnoob
 
 import (
+	"crypto/x509/pkix"
+	"encoding/asn1"
 	"os"
+	"reflect"
 	"testing"
 	"time"
 
@@ -53,6 +56,7 @@ func Test_GenerateCertificate(t *testing.T) {
 				time.Second,  // duration
 				[]string{},   // policies
 				[]string{},   // emails
+				[]string{},   // extensions
 			)
 			So(err, ShouldNotBeNil)
 		})
@@ -86,6 +90,7 @@ func Test_GenerateCertificate(t *testing.T) {
 				time.Second,  // duration
 				[]string{},   // policies
 				[]string{},   // emails
+				[]string{},   // extensions
 			)
 			So(err, ShouldBeNil)
 		})
@@ -159,4 +164,123 @@ func Test_GenerateCSR(t *testing.T) {
 			os.Remove(outputFolder) // nolint
 		})
 	})
+}
+
+func Test_makeExtensions(t *testing.T) {
+	type args struct {
+		extensions []string
+	}
+	tests := []struct {
+		name string
+		args func(t *testing.T) args
+
+		want1      []pkix.Extension
+		wantErr    bool
+		inspectErr func(err error, t *testing.T) //use for more precise error evaluation after test
+	}{
+		{
+			"basic",
+			func(*testing.T) args {
+				return args{
+					extensions: []string{"1.2.3:coucou bro"},
+				}
+			},
+			[]pkix.Extension{
+				{
+					Id:    asn1.ObjectIdentifier{1, 2, 3},
+					Value: []byte("coucou bro"),
+				},
+			},
+			false,
+			nil,
+		},
+		{
+			"basic multiple",
+			func(*testing.T) args {
+				return args{
+					extensions: []string{"1.2.3:coucou bro", "1.2.2:coucou2"},
+				}
+			},
+			[]pkix.Extension{
+				{
+					Id:    asn1.ObjectIdentifier{1, 2, 3},
+					Value: []byte("coucou bro"),
+				},
+				{
+					Id:    asn1.ObjectIdentifier{1, 2, 2},
+					Value: []byte("coucou2"),
+				},
+			},
+			false,
+			nil,
+		},
+		{
+			"invalid format",
+			func(*testing.T) args {
+				return args{
+					extensions: []string{"coucou"},
+				}
+			},
+			nil,
+			true,
+			func(err error, t *testing.T) {
+				exp := "invalid extension string 'coucou'"
+				if err.Error() != exp {
+					t.Fatalf("invalid error: expected '%s' got '%s'", exp, err)
+				}
+			},
+		},
+		{
+			"invalid oid",
+			func(*testing.T) args {
+				return args{
+					extensions: []string{"coucou:coucou"},
+				}
+			},
+			nil,
+			true,
+			func(err error, t *testing.T) {
+				exp := "'coucou' is not a valid OID for extension 'coucou:coucou'"
+				if err.Error() != exp {
+					t.Fatalf("invalid error: expected '%s' got '%s'", exp, err)
+				}
+			},
+		},
+		{
+			"invalid oid 2",
+			func(*testing.T) args {
+				return args{
+					extensions: []string{"1.coucou.3:coucou"},
+				}
+			},
+			nil,
+			true,
+			func(err error, t *testing.T) {
+				exp := "'coucou' is not a valid OID for extension '1.coucou.3:coucou'"
+				if err.Error() != exp {
+					t.Fatalf("invalid error: expected '%s' got '%s'", exp, err)
+				}
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tArgs := tt.args(t)
+
+			got1, err := makeExtensions(tArgs.extensions)
+
+			if !reflect.DeepEqual(got1, tt.want1) {
+				t.Errorf("makeExtensions got1 = %v, want1: %v", got1, tt.want1)
+			}
+
+			if (err != nil) != tt.wantErr {
+				t.Fatalf("makeExtensions error = %v, wantErr: %t", err, tt.wantErr)
+			}
+
+			if tt.inspectErr != nil {
+				tt.inspectErr(err, t)
+			}
+		})
+	}
 }

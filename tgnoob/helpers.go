@@ -57,6 +57,7 @@ func GenerateCertificate(
 	duration time.Duration,
 	policies []string,
 	emails []string,
+	extensions []string,
 ) error {
 
 	var err error
@@ -134,6 +135,12 @@ func GenerateCertificate(
 		return err
 	}
 	options = append(options, tglib.OptIssuePolicies(asnIdentifiers...))
+
+	exts, err := makeExtensions(extensions)
+	if err != nil {
+		return err
+	}
+	options = append(options, tglib.OptIssueExtraExtensions(exts))
 
 	if len(emails) > 0 {
 		options = append(options, tglib.OptIssueEmailAddresses(emails))
@@ -608,7 +615,6 @@ func makePolicies(originalPolicies []string) ([]asn1.ObjectIdentifier, error) {
 
 	for i, kv := range originalPolicies {
 		parts := strings.Split(kv, ".")
-
 		oid := asn1.ObjectIdentifier{1, 3, 6, 1, 4, 1}
 		for _, part := range parts {
 			n, e := strconv.Atoi(part)
@@ -622,4 +628,33 @@ func makePolicies(originalPolicies []string) ([]asn1.ObjectIdentifier, error) {
 	}
 
 	return policies, nil
+}
+
+// makeExtensions converts the extensions flags in form 'asn:value' to
+// an actual list of pkix.Extensions.
+func makeExtensions(extensions []string) ([]pkix.Extension, error) {
+
+	exts := make([]pkix.Extension, 0, len(extensions))
+
+	for _, kv := range extensions {
+		parts := strings.SplitN(kv, ":", 2)
+		if len(parts) != 2 {
+			return nil, fmt.Errorf("invalid extension string '%s'", kv)
+		}
+
+		oidparts := strings.Split(parts[0], ".")
+		oid := asn1.ObjectIdentifier{}
+		for _, part := range oidparts {
+			n, e := strconv.Atoi(part)
+			if e != nil {
+				return nil, fmt.Errorf("'%s' is not a valid OID for extension '%s'", part, kv)
+			}
+			oid = append(oid, n)
+		}
+
+		exts = append(exts, pkix.Extension{Id: oid, Value: []byte(parts[1])})
+
+	}
+
+	return exts, nil
 }

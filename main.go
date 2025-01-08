@@ -85,6 +85,7 @@ func main() {
 	cmdGen.Flags().String("p12-pass", "", "Set the p12 passphrase. Only works when --p12 is set.")
 	cmdGen.Flags().Bool("is-ca", false, "If set the issued certificate could be used as a certificate authority.")
 	cmdGen.Flags().String("pass", "", "Passphrase to use for the private key. If not given it will not be encryped.")
+	cmdGen.Flags().StringSlice("extension", nil, "List of extensions in the form asn:value.")
 	addPKIXFlags(cmdGen)
 	addSigningFlags(cmdGen)
 	addUsageFlags(cmdGen)
@@ -204,6 +205,7 @@ func generateCertificate() {
 		getValidity(viper.GetDuration("validity"), viper.GetBool("is-ca")),
 		viper.GetStringSlice("policy"),
 		viper.GetStringSlice("email"),
+		viper.GetStringSlice("extension"),
 	); err != nil {
 		log.Fatalf("could not generate certificate: %s", err)
 	}
