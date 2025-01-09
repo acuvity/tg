@@ -86,6 +86,7 @@ func main() {
 	cmdGen.Flags().Bool("is-ca", false, "If set the issued certificate could be used as a certificate authority.")
 	cmdGen.Flags().String("pass", "", "Passphrase to use for the private key. If not given it will not be encryped.")
 	cmdGen.Flags().StringSlice("extension", nil, "List of extensions in the form asn:value.")
+	cmdGen.Flags().StringSlice("extra-name", nil, "List of extra-name in the form asn:json-array.")
 	addPKIXFlags(cmdGen)
 	addSigningFlags(cmdGen)
 	addUsageFlags(cmdGen)
@@ -206,6 +207,7 @@ func generateCertificate() {
 		viper.GetStringSlice("policy"),
 		viper.GetStringSlice("email"),
 		viper.GetStringSlice("extension"),
+		viper.GetStringSlice("extra-name"),
 	); err != nil {
 		log.Fatalf("could not generate certificate: %s", err)
 	}

@@ -157,6 +157,7 @@ func Sign(
 			Organization:       csr.Subject.Organization,
 			OrganizationalUnit: csr.Subject.OrganizationalUnit,
 			CommonName:         csr.Subject.CommonName,
+			ExtraNames:         csr.Subject.ExtraNames,
 		},
 		BasicConstraintsValid: true,
 		DNSNames:              csr.DNSNames,

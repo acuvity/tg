@@ -62,6 +62,7 @@ func Test_CreateCertificates(t *testing.T) {
 				[]string{},
 				[]string{},
 				[]string{},
+				[]string{},
 				outputFolder,
 			)
 
@@ -85,6 +86,7 @@ func Test_CreateCertificates(t *testing.T) {
 				[]string{},
 				[]string{},
 				[]string{},
+				[]string{},
 				outputFolder,
 			)
 
@@ -105,6 +107,7 @@ func Test_CreateCertificates(t *testing.T) {
 				singingCertPath,
 				signingCertKeyPath,
 				"wrongpasswd",
+				[]string{},
 				[]string{},
 				[]string{},
 				[]string{},

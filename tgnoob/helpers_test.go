@@ -57,6 +57,7 @@ func Test_GenerateCertificate(t *testing.T) {
 				[]string{},   // policies
 				[]string{},   // emails
 				[]string{},   // extensions
+				[]string{},   // extranames,
 			)
 			So(err, ShouldNotBeNil)
 		})
@@ -91,6 +92,7 @@ func Test_GenerateCertificate(t *testing.T) {
 				[]string{},   // policies
 				[]string{},   // emails
 				[]string{},   // extensions
+				[]string{},   // extranames,
 			)
 			So(err, ShouldBeNil)
 		})
