@@ -20,6 +20,9 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"go.acuvity.ai/a3s/pkgs/bootstrap"
+	"go.acuvity.ai/a3s/pkgs/conf"
+	"go.acuvity.ai/a3s/pkgs/version"
 	"go.acuvity.ai/tg/tgnoob"
 	"golang.org/x/term"
 )
@@ -68,8 +71,36 @@ func main() {
 	})
 
 	var rootCmd = &cobra.Command{
-		Use: "tg",
+		Use:              "tg",
+		SilenceUsage:     true,
+		SilenceErrors:    true,
+		TraverseChildren: true,
+		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+
+			if err := viper.BindPFlags(cmd.PersistentFlags()); err != nil {
+				return err
+			}
+
+			if err := viper.BindPFlags(cmd.Flags()); err != nil {
+				return err
+			}
+
+			bootstrap.ConfigureLogger("minibridge", conf.LoggingConf{
+				LogLevel:  viper.GetString("log-level"),
+				LogFormat: viper.GetString("log-format"),
+			})
+
+			return nil
+		},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if viper.GetBool("version") {
+				fmt.Println(version.Short())
+				os.Exit(0)
+			}
+			return cmd.Usage()
+		},
 	}
+	rootCmd.PersistentFlags().Bool("version", false, "print version and exit.")
 
 	var cmdGen = &cobra.Command{
 		Use:   "cert",
