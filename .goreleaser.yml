@@ -26,7 +26,7 @@ builds:
 archives:
   - id: tg
     formats: ["zip"]
-    builds:
+    ids:
       - tg
 
 signs:
@@ -41,19 +41,3 @@ signs:
         "${artifact}",
       ]
 
-brews:
-  - name: tg
-    homepage: "https://github.com/acuvity/tg"
-    description: Easy TLS certificate generation
-    license: "Apache"
-    repository:
-      owner: acuvity
-      name: homebrew-tap
-    commit_author:
-      name: goreleaserbot
-      email: goreleaser@acuvity.ai
-    directory: Formula
-    install: |
-      bin.install "tg"
-    test: |
-      system "#{bin}/tg", "--help"
