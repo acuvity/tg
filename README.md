@@ -6,7 +6,7 @@ tg (short for tlsgen, and also a french pun) makes issuing certificates easy. It
 
 ## Install
 
-    go get -u github.com/aporeto-inc/tg
+    go get -u github.com/acuvity/tg
 
 ## Examples
 
