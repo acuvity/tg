@@ -15,6 +15,8 @@ import (
 	"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/asn1"
+	"encoding/base64"
+	"encoding/hex"
 	"encoding/pem"
 	"fmt"
 	"net"
@@ -637,33 +639,78 @@ func makePolicies(originalPolicies []string) ([]asn1.ObjectIdentifier, error) {
 	return policies, nil
 }
 
-// makeExtensions converts the extensions flags in form 'asn:value' to
-// an actual list of pkix.Extensions.
+// makeExtensions converts extension flags into pkix.Extensions.
+//
+// Supported forms:
+//
+//	<oid>:<base64-der>
+//	<oid>:base64:<base64-der>
+//	<oid>:hex:<hex-der>
+//	<oid>:critical:base64:<base64-der>
+//	<oid>:critical:hex:<hex-der>
+//
+// The extension value must be the DER-encoded extension value, because
+// x509.Certificate.ExtraExtensions is copied raw into the certificate.
 func makeExtensions(extensions []string) ([]pkix.Extension, error) {
-
 	exts := make([]pkix.Extension, 0, len(extensions))
 
-	for _, kv := range extensions {
-		parts := strings.SplitN(kv, ":", 2)
-		if len(parts) != 2 {
-			return nil, fmt.Errorf("invalid extension string '%s'", kv)
+	for _, raw := range extensions {
+		parts := strings.Split(raw, ":")
+		if len(parts) < 2 {
+			return nil, fmt.Errorf("invalid extension string %q", raw)
 		}
 
-		oidparts := strings.Split(parts[0], ".")
-		oid := asn1.ObjectIdentifier{}
-		for _, part := range oidparts {
-			n, e := strconv.Atoi(part)
-			if e != nil {
-				return nil, fmt.Errorf("'%s' is not a valid OID for extension '%s'", part, kv)
+		oid, err := tglib.ParseOID(parts[0])
+		if err != nil {
+			return nil, fmt.Errorf("invalid extension OID in %q: %w", raw, err)
+		}
+
+		critical := false
+		encoding := "base64"
+		valueIndex := 1
+
+		if parts[valueIndex] == "critical" {
+			critical = true
+			valueIndex++
+			if valueIndex >= len(parts) {
+				return nil, fmt.Errorf("missing extension value in %q", raw)
 			}
-			oid = append(oid, n)
 		}
 
-		exts = append(exts, pkix.Extension{Id: oid, Value: []byte(parts[1])})
+		if parts[valueIndex] == "base64" || parts[valueIndex] == "hex" {
+			encoding = parts[valueIndex]
+			valueIndex++
+			if valueIndex >= len(parts) {
+				return nil, fmt.Errorf("missing extension value in %q", raw)
+			}
+		}
 
+		valueText := strings.Join(parts[valueIndex:], ":")
+
+		value, err := decodeExtensionValue(encoding, valueText)
+		if err != nil {
+			return nil, fmt.Errorf("invalid extension value in %q: %w", raw, err)
+		}
+
+		exts = append(exts, pkix.Extension{
+			Id:       oid,
+			Critical: critical,
+			Value:    value,
+		})
 	}
 
 	return exts, nil
+}
+
+func decodeExtensionValue(encoding string, value string) ([]byte, error) {
+	switch encoding {
+	case "base64":
+		return base64.StdEncoding.DecodeString(value)
+	case "hex":
+		return hex.DecodeString(value)
+	default:
+		return nil, fmt.Errorf("unsupported encoding %q", encoding)
+	}
 }
 
 // makeExtraNames converts the extra-names flags in form 'asn:value1[,value2]' to

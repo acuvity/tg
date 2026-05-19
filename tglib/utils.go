@@ -13,7 +13,11 @@ package tglib
 
 import (
 	"crypto/x509"
+	"encoding/asn1"
 	"encoding/pem"
+	"fmt"
+	"strconv"
+	"strings"
 )
 
 // SplitChain splits the given certificate data into the actual *x509.Certificate and a list of
@@ -54,4 +58,33 @@ func SplitChainPEM(certData []byte) ([]byte, []byte) {
 	block, rest := pem.Decode(certData)
 
 	return pem.EncodeToMemory(block), rest
+}
+
+func ParseOID(s string) (asn1.ObjectIdentifier, error) {
+
+	parts := strings.Split(s, ".")
+	if len(parts) < 2 {
+		return nil, fmt.Errorf("OID must have at least two arcs")
+	}
+
+	oid := make(asn1.ObjectIdentifier, len(parts))
+	for i, part := range parts {
+		n, err := strconv.Atoi(part)
+		if err != nil {
+			return nil, fmt.Errorf("%q is not an integer", part)
+		}
+		if n < 0 {
+			return nil, fmt.Errorf("%q is negative", part)
+		}
+		oid[i] = n
+	}
+
+	if oid[0] > 2 {
+		return nil, fmt.Errorf("first OID arc must be 0, 1, or 2")
+	}
+	if oid[0] < 2 && oid[1] > 39 {
+		return nil, fmt.Errorf("second OID arc must be <= 39 when first arc is 0 or 1")
+	}
+
+	return oid, nil
 }
