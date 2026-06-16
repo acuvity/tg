@@ -60,6 +60,8 @@ func SplitChainPEM(certData []byte) ([]byte, []byte) {
 	return pem.EncodeToMemory(block), rest
 }
 
+// ParseOID parses a string representation of an OID (Object Identifier) into
+// an asn1.ObjectIdentifier.
 func ParseOID(s string) (asn1.ObjectIdentifier, error) {
 
 	parts := strings.Split(s, ".")
