@@ -39,3 +39,12 @@ sec:
 
 build:
 	go build $(LDFLAGS) -trimpath .
+
+remod: 
+	go get go.acuvity.ai/wsc@v1.0.0
+	go get go.acuvity.ai/regolithe@master
+	go get go.acuvity.ai/elemental@master
+	go get go.acuvity.ai/manipulate@master
+	go get go.acuvity.ai/bahamut@master
+	go get go.acuvity.ai/a3s@master
+	go mod tidy
