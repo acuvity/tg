@@ -1,13 +1,14 @@
 module go.acuvity.ai/tg
 
-go 1.25.0
+go 1.26.1
 
 require (
-	github.com/smartystreets/goconvey v1.7.2
-	github.com/spf13/cobra v1.7.0
-	github.com/spf13/viper v1.17.0
-	go.acuvity.ai/a3s v0.0.0-20251202170738-ce282f1820df
-	golang.org/x/term v0.42.0
+	go.acuvity.ai/a3s v0.0.0-20260617150449-d2ae15328db2
+	go.acuvity.ai/bahamut v0.0.0-20260617150351-1e3acb1c723a // indirect
+	go.acuvity.ai/elemental v0.0.0-20260601175251-78f998107f34 // indirect
+	go.acuvity.ai/manipulate v0.0.0-20260609192825-631c9be42b8d // indirect
+	go.acuvity.ai/regolithe v0.0.0-20260601174230-81cdfce253df // indirect
+	go.acuvity.ai/wsc v1.0.0 // indirect
 )
 
 require (
@@ -86,14 +87,17 @@ require (
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
 	github.com/sergi/go-diff v1.3.2-0.20230802210424-5b0b94c5c0d3 // indirect
 	github.com/shirou/gopsutil/v3 v3.24.5 // indirect
-	github.com/shoenig/go-m1cpu v0.1.6 // indirect
+	github.com/shoenig/go-m1cpu v0.2.1 // indirect
 	github.com/skeema/knownhosts v1.3.1 // indirect
 	github.com/smartystreets/assertions v1.2.0 // indirect
+	github.com/smartystreets/goconvey v1.7.2
 	github.com/sourcegraph/conc v0.3.0 // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
 	github.com/spf13/afero v1.10.0 // indirect
 	github.com/spf13/cast v1.5.1 // indirect
+	github.com/spf13/cobra v1.7.0
 	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/spf13/viper v1.17.0
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/tklauser/go-sysconf v0.3.12 // indirect
 	github.com/tklauser/numcpus v0.6.1 // indirect
@@ -108,11 +112,6 @@ require (
 	github.com/xeipuuv/gojsonreference v0.0.0-20180127040603-bd5ef7bd5415 // indirect
 	github.com/xeipuuv/gojsonschema v1.2.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
-	go.acuvity.ai/bahamut v0.0.0-20251120182203-800968790e7b // indirect
-	go.acuvity.ai/elemental v0.0.0-20251120182040-b27ee0dac9d0 // indirect
-	go.acuvity.ai/manipulate v0.0.0-20251120182113-d5cda46691a0 // indirect
-	go.acuvity.ai/regolithe v0.0.0-20251120181914-3534fa17d859 // indirect
-	go.acuvity.ai/wsc v0.0.0-20250506232542-8de7ff436ec0 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/automaxprocs v1.6.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
@@ -120,6 +119,7 @@ require (
 	golang.org/x/exp v0.0.0-20260410095643-746e56fc9e2f // indirect
 	golang.org/x/net v0.53.0 // indirect
 	golang.org/x/sys v0.43.0 // indirect
+	golang.org/x/term v0.42.0
 	golang.org/x/text v0.36.0 // indirect
 	golang.org/x/time v0.15.0 // indirect
 	google.golang.org/protobuf v1.36.3 // indirect
@@ -128,4 +128,13 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	rsc.io/qr v0.2.0 // indirect
+)
+
+require (
+	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
+	github.com/xdg-go/scram v1.2.0 // indirect
+	github.com/xdg-go/stringprep v1.0.4 // indirect
+	github.com/youmark/pkcs8 v0.0.0-20240726163527-a2c0da244d78 // indirect
+	go.mongodb.org/mongo-driver/v2 v2.5.0 // indirect
+	golang.org/x/sync v0.20.0 // indirect
 )
