@@ -13,17 +13,18 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
+	"log/slog"
 	"os"
 	"strings"
 	"time"
 
+	"github.com/lmittmann/tint"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"go.acuvity.ai/a3s/pkgs/bootstrap"
-	"go.acuvity.ai/a3s/pkgs/conf"
-	"go.acuvity.ai/a3s/pkgs/version"
 	"go.acuvity.ai/tg/tgnoob"
+	"go.acuvity.ai/tg/version"
 	"golang.org/x/term"
 )
 
@@ -85,15 +86,13 @@ func main() {
 				return err
 			}
 
-			bootstrap.ConfigureLogger("minibridge", conf.LoggingConf{
-				LogLevel:  viper.GetString("log-level"),
-				LogFormat: viper.GetString("log-format"),
-			})
+			configureLogger(viper.GetString("log-level"), viper.GetString("log-format"))
 
 			return nil
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if viper.GetBool("version") {
+
 				fmt.Println(version.Short())
 				os.Exit(0)
 			}
@@ -381,4 +380,58 @@ func getValidity(duration time.Duration, isCA bool) time.Duration {
 	}
 
 	return 8640 * time.Hour
+}
+
+func configureLogger(level string, format string) {
+
+	lvl := func(level string) slog.Level {
+
+		switch level {
+		case "trace", "debug":
+			return slog.LevelDebug
+		case "info":
+			return slog.LevelInfo
+		case "warn":
+			return slog.LevelWarn
+		case "error", "fatal":
+			return slog.LevelError
+		default:
+			return slog.LevelInfo
+		}
+	}(level)
+
+	errReplacer := func(groups []string, a slog.Attr) slog.Attr {
+		switch e := a.Value.Any().(type) {
+		case error:
+			return slog.String("err", e.Error())
+		default:
+			return a
+		}
+	}
+
+	var handler slog.Handler
+	switch format {
+	case "json":
+		handler = slog.NewJSONHandler(os.Stderr, &slog.HandlerOptions{
+			Level:       lvl,
+			ReplaceAttr: errReplacer,
+		})
+	case "console":
+		handler = tint.NewHandler(os.Stderr, &tint.Options{
+			Level:       lvl,
+			ReplaceAttr: errReplacer,
+			TimeFormat:  time.Stamp,
+		})
+	case "silent":
+		handler = slog.NewTextHandler(io.Discard, nil)
+	default:
+		handler = slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{
+			Level:       lvl,
+			ReplaceAttr: errReplacer,
+		})
+	}
+
+	logger := slog.New(handler)
+
+	slog.SetDefault(logger)
 }

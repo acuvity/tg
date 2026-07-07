@@ -4,7 +4,7 @@ GIT_SHA=$(shell git rev-parse --short HEAD)
 GIT_BRANCH=$(shell git rev-parse --abbrev-ref HEAD)
 GIT_TAG=$(shell git describe --tags --abbrev=0 --match='v[0-9]*.[0-9]*.[0-9]*' 2> /dev/null | sed 's/^.//')
 BUILD_DATE=$(shell date)
-VERSION_PKG="go.acuvity.ai/a3s/pkgs/version"
+VERSION_PKG="go.acuvity.ai/tg/version"
 LDFLAGS = -ldflags="-w -s -X '$(VERSION_PKG).GitSha=$(GIT_SHA)' -X '$(VERSION_PKG).GitBranch=$(GIT_BRANCH)' -X '$(VERSION_PKG).GitTag=$(GIT_TAG)' -X '$(VERSION_PKG).BuildDate=$(BUILD_DATE)'"
 
 export GO111MODULE = on
@@ -40,11 +40,5 @@ sec:
 build:
 	go build $(LDFLAGS) -trimpath .
 
-remod: 
-	go get go.acuvity.ai/wsc@v1.0.0
-	go get go.acuvity.ai/regolithe@master
-	go get go.acuvity.ai/elemental@master
-	go get go.acuvity.ai/manipulate@master
-	go get go.acuvity.ai/bahamut@master
-	go get go.acuvity.ai/a3s@master
+remod:
 	go mod tidy
