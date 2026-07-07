@@ -91,7 +91,7 @@ func Verify(signingCertPEMData []byte, certPEMData []byte, keyUsages []x509.ExtK
 
 	x509Cert, err := x509.ParseCertificate(block.Bytes)
 	if err != nil {
-		return fmt.Errorf("unable to parse certificate: %s", err)
+		return fmt.Errorf("unable to parse certificate: %w", err)
 	}
 
 	if keyUsages == nil {
@@ -104,7 +104,7 @@ func Verify(signingCertPEMData []byte, certPEMData []byte, keyUsages []x509.ExtK
 			KeyUsages: keyUsages,
 		},
 	); err != nil {
-		return fmt.Errorf("unable to verify child certificate: %s", err)
+		return fmt.Errorf("unable to verify child certificate: %w", err)
 	}
 
 	return nil
@@ -140,7 +140,7 @@ func ParseCertificates(certPemBytes []byte) ([]*x509.Certificate, error) {
 
 		x509Cert, err := x509.ParseCertificate(block.Bytes)
 		if err != nil {
-			return nil, fmt.Errorf("unable to parse certificate: %s", err)
+			return nil, fmt.Errorf("unable to parse certificate: %w", err)
 		}
 
 		x509Certs = append(x509Certs, x509Cert)
@@ -159,7 +159,7 @@ func ParseCertificatePEM(path string) (*x509.Certificate, error) {
 
 	data, err := os.ReadFile(path)
 	if err != nil {
-		return nil, fmt.Errorf("unable to read pem file: %s", err)
+		return nil, fmt.Errorf("unable to read pem file: %w", err)
 	}
 
 	return ParseCertificate(data)
@@ -171,7 +171,7 @@ func ParseCertificatePEMs(path string) ([]*x509.Certificate, error) {
 
 	data, err := os.ReadFile(path)
 	if err != nil {
-		return nil, fmt.Errorf("unable to read pem file: %s", err)
+		return nil, fmt.Errorf("unable to read pem file: %w", err)
 	}
 
 	return ParseCertificates(data)
@@ -226,17 +226,17 @@ func ReadCertificates(certPemBytes []byte, keyPemBytes []byte, password string) 
 	case ecPrivateKeyHeader:
 		key, err = x509.ParseECPrivateKey(keyBlock.Bytes)
 		if err != nil {
-			return nil, nil, fmt.Errorf("failed to unmarshal EC private key: %s", err)
+			return nil, nil, fmt.Errorf("failed to unmarshal EC private key: %w", err)
 		}
 	case rsaPrivateKeyHeader:
 		key, err = x509.ParsePKCS1PrivateKey(keyBlock.Bytes)
 		if err != nil {
-			return nil, nil, fmt.Errorf("failed to unmarshal RSA private key: %s", err)
+			return nil, nil, fmt.Errorf("failed to unmarshal RSA private key: %w", err)
 		}
 	case privateKeyHeader:
 		key, err = x509.ParsePKCS8PrivateKey(keyBlock.Bytes)
 		if err != nil {
-			return nil, nil, fmt.Errorf("failed to unmarshal private key: %s", err)
+			return nil, nil, fmt.Errorf("failed to unmarshal private key: %w", err)
 		}
 	default:
 		return nil, nil, fmt.Errorf("unsuported private key type: %s", keyBlock.Type)
@@ -263,12 +263,12 @@ func ReadCertificatePEMs(certPath, keyPath, password string) ([]*x509.Certificat
 
 	certPemBytes, err := os.ReadFile(certPath)
 	if err != nil {
-		return nil, nil, fmt.Errorf("unable to read cert pem file: %s", err)
+		return nil, nil, fmt.Errorf("unable to read cert pem file: %w", err)
 	}
 
 	keyPemBytes, err := os.ReadFile(keyPath)
 	if err != nil {
-		return nil, nil, fmt.Errorf("unable to read key pem file: %s", err)
+		return nil, nil, fmt.Errorf("unable to read key pem file: %w", err)
 	}
 
 	return ReadCertificates(certPemBytes, keyPemBytes, password)

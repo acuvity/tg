@@ -91,7 +91,7 @@ func BuildSubjectAltNameExtension(hosts []string) (*pkix.Extension, error) {
 
 	san, err := BuildSANExtension(ids)
 	if err != nil {
-		return nil, fmt.Errorf("SAN extension building failure (%v)", err)
+		return nil, fmt.Errorf("SAN extension building failure: %w", err)
 	}
 
 	return san, nil
@@ -116,7 +116,7 @@ func BuildSANExtension(identites []Identity) (*pkix.Extension, error) {
 
 	bs, err := asn1.Marshal(rawValues)
 	if err != nil {
-		return nil, fmt.Errorf("failed to marshal the raw values for SAN field (err: %s)", err)
+		return nil, fmt.Errorf("failed to marshal the raw values for SAN field: %w", err)
 	}
 
 	return &pkix.Extension{Id: oidSubjectAlternativeName, Value: bs}, nil
@@ -182,7 +182,7 @@ func ExtractIDs(exts []pkix.Extension) (map[string]struct{}, error) {
 
 	idsWithType, err := ExtractIDsFromSAN(sanExt)
 	if err != nil {
-		return nil, fmt.Errorf("failed to extract identities from SAN extension (error %v)", err)
+		return nil, fmt.Errorf("failed to extract identities from SAN extension: %w", err)
 	}
 
 	ids := map[string]struct{}{}

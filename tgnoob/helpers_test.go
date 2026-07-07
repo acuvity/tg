@@ -14,6 +14,7 @@ package tgnoob
 import (
 	"crypto/x509/pkix"
 	"encoding/asn1"
+	"encoding/base64"
 	"os"
 	"reflect"
 	"testing"
@@ -184,7 +185,9 @@ func Test_makeExtensions(t *testing.T) {
 			"basic",
 			func(*testing.T) args {
 				return args{
-					extensions: []string{"1.2.3:coucou bro"},
+					extensions: []string{
+						"1.2.3:" + base64.StdEncoding.EncodeToString([]byte("coucou bro")),
+					},
 				}
 			},
 			[]pkix.Extension{
@@ -200,7 +203,10 @@ func Test_makeExtensions(t *testing.T) {
 			"basic multiple",
 			func(*testing.T) args {
 				return args{
-					extensions: []string{"1.2.3:coucou bro", "1.2.2:coucou2"},
+					extensions: []string{
+						"1.2.3:" + base64.StdEncoding.EncodeToString([]byte("coucou bro")),
+						"1.2.2:" + base64.StdEncoding.EncodeToString([]byte("coucou2")),
+					},
 				}
 			},
 			[]pkix.Extension{
@@ -226,7 +232,7 @@ func Test_makeExtensions(t *testing.T) {
 			nil,
 			true,
 			func(err error, t *testing.T) {
-				exp := "invalid extension string 'coucou'"
+				exp := `invalid extension string "coucou"`
 				if err.Error() != exp {
 					t.Fatalf("invalid error: expected '%s' got '%s'", exp, err)
 				}
@@ -242,7 +248,7 @@ func Test_makeExtensions(t *testing.T) {
 			nil,
 			true,
 			func(err error, t *testing.T) {
-				exp := "'coucou' is not a valid OID for extension 'coucou:coucou'"
+				exp := `invalid extension OID in "coucou:coucou": OID must have at least two arcs`
 				if err.Error() != exp {
 					t.Fatalf("invalid error: expected '%s' got '%s'", exp, err)
 				}
@@ -258,7 +264,7 @@ func Test_makeExtensions(t *testing.T) {
 			nil,
 			true,
 			func(err error, t *testing.T) {
-				exp := "'coucou' is not a valid OID for extension '1.coucou.3:coucou'"
+				exp := `invalid extension OID in "1.coucou.3:coucou": "coucou" is not an integer`
 				if err.Error() != exp {
 					t.Fatalf("invalid error: expected '%s' got '%s'", exp, err)
 				}
