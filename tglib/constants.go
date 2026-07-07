@@ -15,4 +15,6 @@ const (
 	privateKeyHeader    = "PRIVATE KEY"
 	ecPrivateKeyHeader  = "EC PRIVATE KEY"
 	rsaPrivateKeyHeader = "RSA PRIVATE KEY"
+	publicKeyHeader     = "PUBLIC KEY"
+	rsaPublicKeyHeader  = "RSA PUBLIC KEY"
 )
