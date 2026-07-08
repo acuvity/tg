@@ -12,9 +12,12 @@
 package tglib
 
 const (
-	privateKeyHeader    = "PRIVATE KEY"
-	ecPrivateKeyHeader  = "EC PRIVATE KEY"
-	rsaPrivateKeyHeader = "RSA PRIVATE KEY"
-	publicKeyHeader     = "PUBLIC KEY"
-	rsaPublicKeyHeader  = "RSA PUBLIC KEY"
+	privateKeyHeader         = "PRIVATE KEY"
+	ecPrivateKeyHeader       = "EC PRIVATE KEY"
+	rsaPrivateKeyHeader      = "RSA PRIVATE KEY"
+	publicKeyHeader          = "PUBLIC KEY"
+	rsaPublicKeyHeader       = "RSA PUBLIC KEY"
+	ecPublicKeyHeader        = "EC PUBLIC KEY"
+	certificateHeader        = "CERTIFICATE"
+	certificateRequestHeader = "CERTIFICATE REQUEST"
 )

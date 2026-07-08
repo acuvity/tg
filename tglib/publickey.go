@@ -31,9 +31,24 @@ func PEMToPublicKey(keyBlock *pem.Block) (crypto.PublicKey, error) {
 	case publicKeyHeader:
 		return x509.ParsePKIXPublicKey(keyBlock.Bytes)
 
+	case ecPublicKeyHeader:
+		panic(fmt.Sprintf("Header %s: not implemented", ecPublicKeyHeader))
+
 	case rsaPublicKeyHeader:
 		return x509.ParsePKCS1PublicKey(keyBlock.Bytes)
 
+	case certificateHeader:
+		cert, err := x509.ParseCertificate(keyBlock.Bytes)
+		if err != nil {
+			return nil, err
+		}
+		return cert.PublicKey, nil
+	case certificateRequestHeader:
+		csr, err := x509.ParseCertificateRequest(keyBlock.Bytes)
+		if err != nil {
+			return nil, err
+		}
+		return csr.PublicKey, nil
 	default:
 		return nil, fmt.Errorf("unsupported public key type: %s", keyBlock.Type)
 	}
